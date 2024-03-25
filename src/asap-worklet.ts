@@ -1,9 +1,13 @@
 import { ASAP, ASAPSampleFormat } from './asap-web/asap.js';
-import { TextDecoderInstall } from './text-decoder.ts';
 
 /// <reference types="@types/audioworklet" />
 
-TextDecoderInstall();
+// This is a workaround to make the TextDecoder available in the AudioWorkletGlobalScope
+(globalThis as any).TextDecoder = class TextDecoder {
+  decode(buffer: Uint8Array) {
+    return String.fromCharCode(...buffer);
+  }
+};
 
 /** Types to define the comunication between the AudioWorklet and the Node. */
 export interface InputMessagesMap {
